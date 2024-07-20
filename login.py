@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from profesores import ProfesoresApp
+from PIL import Image, ImageTk
 from alumnos import AlumnoApp
 from src.model.database_profesores import DatabaseManagerProfesores
 from src.model.database_alumnos import DatabaseManagerAlumnos
@@ -52,10 +53,14 @@ class LoginApp:
         )
         title_label.pack(pady=(40, 20))
 
-        # Rol Selection
+        # Rol Selection Frame
         rol_frame = Frame(main_frame, bg="#22577A")
         rol_frame.pack(pady=10)
+        rol_frame.columnconfigure(0, weight=1)
+        rol_frame.columnconfigure(1, weight=1)
+        rol_frame.columnconfigure(2, weight=1)
 
+        # Radio Buttons
         professor_radio = Radiobutton(
             rol_frame,
             text="Profesor",
@@ -67,7 +72,7 @@ class LoginApp:
             font=("Helvetica", 18),
             selectcolor="#22577A",
         )
-        professor_radio.grid(row=0, column=0, padx=10)
+        professor_radio.grid(row=0, column=0, sticky="ew")
 
         student_radio = Radiobutton(
             rol_frame,
@@ -80,8 +85,20 @@ class LoginApp:
             font=("Helvetica", 18),
             selectcolor="#22577A",
         )
-        student_radio.grid(row=0, column=1, padx=10)
+        student_radio.grid(row=0, column=2, sticky="ew")
 
+        path_to_image = "src/example/UNAS.png"  # Asegúrate de que la ruta es correcta
+        original_image = Image.open(path_to_image)
+        resized_image = original_image.resize(
+            (100, 100), Image.Resampling.LANCZOS
+        )  # Redimensiona la imagen
+        self.image = ImageTk.PhotoImage(resized_image)
+
+        # Image Label
+        self.image_label = Label(rol_frame, image=self.image, bg="#22577A")
+        self.image_label.grid(row=1, column=1, sticky="nsew")
+
+        # Login Button
         login_btn = Button(
             main_frame,
             text="Login",

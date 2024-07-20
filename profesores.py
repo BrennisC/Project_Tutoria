@@ -239,13 +239,19 @@ class ProfesoresApp:
                     break
 
                 cv2.imshow("Presiona Espacio para tomar la foto, ESC para salir", frame)
-                key = cv2.waitKey(1)
-                if key % 256 == 27:  # ESC
+                key = (
+                    cv2.waitKey(1) & 0xFF
+                )  # Asegurarse de capturar correctamente la tecla
+
+                if key == 27:  # ESC
                     break
-                elif key % 256 == 32:  # Space
-                    img_name = f"src/example/profesor_{self.Codigo.get()}.png"
+                elif key == 32:  # Space
+                    img_name = (
+                        f"src/image_profe/{self.Nombre.get()}_{self.Codigo.get()}.png"
+                    )
                     cv2.imwrite(img_name, frame)
                     messagebox.showinfo("Información", f"Foto guardada como {img_name}")
+
                     break
 
             cap.release()
