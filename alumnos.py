@@ -118,10 +118,10 @@ class AlumnoApp:
 
     def capture_images(self):
         try:
-            student_id = simpledialog.askstring("Input", "Enter Student ID:")
+            student_id = simpledialog.askstring("Ingrese", "Ingrese  estudiante ID:")
             if student_id:
                 self.face_recognition_system.capture_images(student_id)
-                messagebox.showinfo("Success", "Images captured successfully.")
+                messagebox.showinfo("Información", "Images capturadas correctamente.")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to capture images: {e}")
 

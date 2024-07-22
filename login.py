@@ -90,13 +90,13 @@ class LoginApp:
         path_to_image = "src/example/UNAS.png"  # Asegúrate de que la ruta es correcta
         original_image = Image.open(path_to_image)
         resized_image = original_image.resize(
-            (100, 100), Image.Resampling.LANCZOS
+            (130, 130), Image.Resampling.LANCZOS
         )  # Redimensiona la imagen
         self.image = ImageTk.PhotoImage(resized_image)
 
         # Image Label
         self.image_label = Label(rol_frame, image=self.image, bg="#22577A")
-        self.image_label.grid(row=1, column=1, sticky="nsew")
+        self.image_label.grid(row=4, column=1, sticky="nsew")
 
         # Login Button
         login_btn = Button(
@@ -142,3 +142,4 @@ class LoginApp:
 
 if __name__ == "__main__":
     app = LoginApp()
+# Car's Outside

@@ -21,9 +21,7 @@ class DatabaseManagerAlumnos:
         try:
             connection = self.connect()
             cursor = connection.cursor()
-            cursor.execute(
-                "SELECT id_alumno, codigo, nombre, apellido, email, telefono, ciclo FROM alumnos"
-            )
+            cursor.execute("SELECT * FROM tutoria.alumnos ORDER BY id_alumno DESC")
             rows = cursor.fetchall()
             cursor.close()
             connection.close()
