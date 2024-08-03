@@ -38,6 +38,7 @@ class LoginApp:
             base_path = os.path.abspath(".")
         return os.path.join(base_path, relative_path)
 
+    # Creando los widgets de programa
     def create_widgets(self):
         # Main Frame
         main_frame = Frame(self.app, bg="#22577A", bd=2, relief="raised")
@@ -128,6 +129,7 @@ class LoginApp:
         )
         back_btn.pack(side=BOTTOM, pady=(10, 20))
 
+    # Función para iniciar sesión
     def login(self):
         role = self.role.get()
         if role == "Profesor":
@@ -142,4 +144,3 @@ class LoginApp:
 
 if __name__ == "__main__":
     app = LoginApp()
-# Car's Outside

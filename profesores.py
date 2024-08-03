@@ -243,11 +243,11 @@ class ProfesoresApp:
                     cv2.waitKey(1) & 0xFF
                 )  # Asegurarse de capturar correctamente la tecla
 
-                if key == 27:  # ESC
+                if key == 27:  # ESC para salir de programa
                     break
-                elif key == 32:  # Space
+                elif key == 32:  # Space para capturar la imangen
                     img_name = (
-                        f"src/image_profe/{self.Nombre.get()}_{self.Codigo.get()}.png"
+                        f"src/image_profe/{self.Apellido.get()}_{self.Codigo.get()}.png"
                     )
                     cv2.imwrite(img_name, frame)
                     messagebox.showinfo("Información", f"Foto guardada como {img_name}")

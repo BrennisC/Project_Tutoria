@@ -1,9 +1,7 @@
 import os
 from tkinter import *
-from tkinter import filedialog, messagebox, ttk
-from tkinter import simpledialog
+from tkinter import filedialog, messagebox, simpledialog, ttk
 from PIL import Image, ImageTk
-import mysql.connector
 from src.model.database_alumnos import DatabaseManagerAlumnos
 from src.components.face_recognition_system import FaceRecognitionSystem
 
@@ -12,116 +10,198 @@ class AlumnoApp:
     def __init__(self, db_manager):
         self.db_manager = db_manager
         self.face_recognition_system = FaceRecognitionSystem()
-        self.root = Tk()
-        self.root.title("Gestión de Alumnos")
-        self.root.geometry("800x700")
+
+        self.app = Tk()
+        self.app.title("Gestión de Alumnos")
+        self.app.geometry("900x700")
+        self.app.configure(bg="#E8F0F2")
+
+        self.Codigo = StringVar()
+        self.Nombre = StringVar()
+        self.Apellido = StringVar()
+        self.Email = StringVar()
+        self.Telefono = StringVar()
+        self.Ciclo = StringVar()
+
         self.create_widgets()
+        self.app.mainloop()
 
     def create_widgets(self):
-        self.title_label = Label(
-            self.root,
+        main_frame = Frame(self.app, bg="#E8F0F2")
+        main_frame.pack(fill=BOTH, expand=True)
+
+        self.create_title(main_frame)
+        self.create_input_frame(main_frame)
+        self.create_table(main_frame)
+
+    def create_title(self, parent):
+        title_label = Label(
+            parent,
             text="Registro de Alumnos",
-            font=("Roboto Medium", 24),
-            bg="#3498DB",
-            fg="white",
+            bg="#E8F0F2",
+            fg="#333333",
+            font=("Helvetica", 24, "bold"),
+            pady=20,
         )
-        self.title_label.pack(fill=X, pady=10)
+        title_label.pack()
 
-        self.form_frame = Frame(self.root, bg="#ECF0F1")
-        self.form_frame.pack(pady=20, padx=20, fill="both", expand=True)
+    def create_input_frame(self, parent):
+        input_frame = Frame(
+            parent, bg="#FFFFFF", bd=2, relief="groove", padx=20, pady=20
+        )
+        input_frame.pack(pady=20, padx=20, fill=BOTH, expand=True)
 
-        fields = ["Código", "Nombre", "Apellido", "Email", "Teléfono", "Ciclo"]
-        self.entries = {}
-        for index, field in enumerate(fields):
-            label = Label(
-                self.form_frame, text=f"{field}:", font=("Roboto", 14), bg="#ECF0F1"
-            )
-            label.grid(
-                row=index // 3, column=(index % 3) * 2, pady=10, padx=10, sticky="w"
-            )
-            entry = Entry(self.form_frame, width=30, font=("Roboto", 14))
-            entry.grid(
-                row=index // 3, column=(index % 3) * 2 + 1, pady=10, padx=10, sticky="w"
-            )
-            self.entries[field] = entry
+        self.create_input_fields(input_frame)
+        self.create_buttons(input_frame)
 
-        self.add_button = Button(
-            self.form_frame,
+    def create_input_fields(self, frame):
+        Label(frame, text="Código", font=("Helvetica", 12), bg="#FFFFFF").grid(
+            column=0, row=0, padx=10, pady=10, sticky=E
+        )
+        Entry(frame, textvariable=self.Codigo, font=("Helvetica", 12)).grid(
+            column=1, row=0, padx=10, pady=10, sticky=W
+        )
+
+        Label(frame, text="Nombre", font=("Helvetica", 12), bg="#FFFFFF").grid(
+            column=0, row=1, padx=10, pady=10, sticky=E
+        )
+        Entry(frame, textvariable=self.Nombre, font=("Helvetica", 12)).grid(
+            column=1, row=1, padx=10, pady=10, sticky=W
+        )
+
+        Label(frame, text="Apellido", font=("Helvetica", 12), bg="#FFFFFF").grid(
+            column=0, row=2, padx=10, pady=10, sticky=E
+        )
+        Entry(frame, textvariable=self.Apellido, font=("Helvetica", 12)).grid(
+            column=1, row=2, padx=10, pady=10, sticky=W
+        )
+
+        Label(frame, text="Email", font=("Helvetica", 12), bg="#FFFFFF").grid(
+            column=2, row=0, padx=10, pady=10, sticky=E
+        )
+        Entry(frame, textvariable=self.Email, font=("Helvetica", 12)).grid(
+            column=3, row=0, padx=10, pady=10, sticky=W
+        )
+
+        Label(frame, text="Teléfono", font=("Helvetica", 12), bg="#FFFFFF").grid(
+            column=2, row=1, padx=10, pady=10, sticky=E
+        )
+        Entry(frame, textvariable=self.Telefono, font=("Helvetica", 12)).grid(
+            column=3, row=1, padx=10, pady=10, sticky=W
+        )
+
+        Label(frame, text="Ciclo", font=("Helvetica", 12), bg="#FFFFFF").grid(
+            column=2, row=2, padx=10, pady=10, sticky=E
+        )
+        self.combox_ciclo = ttk.Combobox(
+            frame, textvariable=self.Ciclo, state="readonly", font=("Helvetica", 12)
+        )
+        self.combox_ciclo["values"] = [str(i) for i in range(1, 11)]
+        self.combox_ciclo.grid(column=3, row=2, padx=10, pady=10, sticky=W)
+
+    def create_buttons(self, frame):
+        button_frame = Frame(frame, bg="#FFFFFF")
+        button_frame.grid(column=0, row=3, columnspan=4, pady=20)
+
+        Button(
+            button_frame,
             text="Registrar",
             command=self.registrar,
+            font=("Helvetica", 12),
             bg="#2ECC71",
-            fg="white",
-            font=("Roboto", 14),
-        )
-        self.update_button = Button(
-            self.form_frame,
+            fg="#FFFFFF",
+            width=10,
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        ).grid(column=0, row=0, padx=10)
+        Button(
+            button_frame,
             text="Actualizar",
             command=self.actualizar,
+            font=("Helvetica", 12),
             bg="#F39C12",
-            fg="white",
-            font=("Roboto", 14),
-        )
-        self.delete_button = Button(
-            self.form_frame,
+            fg="#FFFFFF",
+            width=10,
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        ).grid(column=1, row=0, padx=10)
+        Button(
+            button_frame,
             text="Eliminar",
             command=self.eliminar,
+            font=("Helvetica", 12),
             bg="#E74C3C",
-            fg="white",
-            font=("Roboto", 14),
-        )
-        self.load_photo_button = Button(
-            self.form_frame,
+            fg="#FFFFFF",
+            width=10,
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        ).grid(column=2, row=0, padx=10)
+        Button(
+            button_frame,
             text="Cargar Foto",
             command=self.cargar_foto,
+            font=("Helvetica", 12),
             bg="#3498DB",
-            fg="white",
-            font=("Roboto", 14),
-        )
-        self.capture_images_button = Button(
-            self.form_frame,
+            fg="#FFFFFF",
+            width=10,
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        ).grid(column=3, row=0, padx=10)
+        Button(
+            button_frame,
             text="Capturar Imágenes",
             command=self.capture_images,
+            font=("Helvetica", 12),
             bg="#3498DB",
-            fg="white",
-            font=("Roboto", 14),
-        )
-        self.recognize_student_button = Button(
-            self.form_frame,
+            fg="#FFFFFF",
+            width=15,
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        ).grid(column=4, row=0, padx=10)
+        Button(
+            button_frame,
             text="Reconocer Estudiante",
             command=self.recognize_student,
+            font=("Helvetica", 12),
             bg="#3498DB",
-            fg="white",
-            font=("Roboto", 14),
+            fg="#FFFFFF",
+            width=20,
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        ).grid(column=5, row=0, padx=10)
+
+        self.photo_label = Label(frame, bg="#FFFFFF")
+        self.photo_label.grid(row=4, column=1, columnspan=2, pady=10)
+
+    def create_table(self, frame):
+        table_frame = Frame(frame, bg="#E8F0F2")
+        table_frame.pack(pady=20, padx=20, fill=BOTH, expand=True)
+
+        columns = ("id", "Código", "Nombre", "Apellido", "Email", "Teléfono", "Ciclo")
+        self.tvAlumnos = ttk.Treeview(
+            table_frame, columns=columns, show="headings", selectmode="browse"
         )
+        self.tvAlumnos.pack(fill=BOTH, expand=True)
 
-        self.add_button.grid(row=3, column=0, pady=20)
-        self.update_button.grid(row=3, column=1, pady=20)
-        self.delete_button.grid(row=3, column=2, pady=20)
-        self.load_photo_button.grid(row=4, column=0, pady=20)
-        self.capture_images_button.grid(row=4, column=1, pady=20)
-        self.recognize_student_button.grid(row=4, column=2, pady=20)
+        for col in columns:
+            self.tvAlumnos.column(col, anchor=CENTER, width=100)
+            self.tvAlumnos.heading(col, text=col)
 
-        self.photo_label = Label(self.form_frame, bg="#ECF0F1")
-        self.photo_label.grid(row=5, column=1, columnspan=2)
-
-        self.table_frame = Frame(self.root)
-        self.table_frame.pack(pady=20, padx=20, fill="both", expand=True)
-        self.treeview = ttk.Treeview(
-            self.table_frame, columns=("id",) + tuple(fields), show="headings"
-        )
-        for field in ("id",) + tuple(fields):
-            self.treeview.heading(field, text=field)
-            self.treeview.column(field, anchor="center", width=100)
-        self.treeview.pack(pady=10, padx=10, fill="both", expand=True)
-        self.treeview.bind("<ButtonRelease-1>", self.on_treeview_click)
+        self.tvAlumnos.bind("<ButtonRelease-1>", self.on_treeview_click)
         self.load_data()
 
     def capture_images(self):
         try:
-            student_id = simpledialog.askstring("Ingrese", "Ingrese  estudiante ID:")
+            student_id = simpledialog.askstring("Ingrese", "Ingrese estudiante ID:")
             if student_id:
                 self.face_recognition_system.capture_images(student_id)
-                messagebox.showinfo("Información", "Images capturadas correctamente.")
+                messagebox.showinfo("Información", "Imágenes capturadas correctamente.")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to capture images: {e}")
 
@@ -151,12 +231,12 @@ class AlumnoApp:
 
     def registrar(self):
         alumno_data = (
-            self.entries["Código"].get(),
-            self.entries["Nombre"].get(),
-            self.entries["Apellido"].get(),
-            self.entries["Email"].get(),
-            self.entries["Teléfono"].get(),
-            self.entries["Ciclo"].get(),
+            self.Codigo.get(),
+            self.Nombre.get(),
+            self.Apellido.get(),
+            self.Email.get(),
+            self.Telefono.get(),
+            self.Ciclo.get(),
         )
         try:
             self.db_manager.insert(alumno_data)
@@ -167,24 +247,28 @@ class AlumnoApp:
             messagebox.showerror("Error", f"Error al registrar el alumno: {e}")
 
     def clear_entries(self):
-        for entry in self.entries.values():
-            entry.delete(0, END)
+        self.Codigo.set("")
+        self.Nombre.set("")
+        self.Apellido.set("")
+        self.Email.set("")
+        self.Telefono.set("")
+        self.Ciclo.set("")
 
     def actualizar(self):
-        selected_items = self.treeview.selection()
+        selected_items = self.tvAlumnos.selection()
         if not selected_items:
             messagebox.showinfo("Selección", "No se ha seleccionado ningún elemento.")
             return
 
         selected_item = selected_items[0]
         alumno_data = (
-            self.entries["Código"].get(),
-            self.entries["Nombre"].get(),
-            self.entries["Apellido"].get(),
-            self.entries["Email"].get(),
-            self.entries["Teléfono"].get(),
-            self.entries["Ciclo"].get(),
-            self.treeview.item(selected_item, "values")[0],  # ID del alumno
+            self.Codigo.get(),
+            self.Nombre.get(),
+            self.Apellido.get(),
+            self.Email.get(),
+            self.Telefono.get(),
+            self.Ciclo.get(),
+            self.tvAlumnos.item(selected_item, "values")[0],  # ID del alumno
         )
         try:
             self.db_manager.update(alumno_data)
@@ -194,13 +278,13 @@ class AlumnoApp:
             messagebox.showerror("Error", f"Error al actualizar el alumno: {e}")
 
     def eliminar(self):
-        selected_items = self.treeview.selection()
+        selected_items = self.tvAlumnos.selection()
         if not selected_items:
             messagebox.showinfo("Selección", "No se ha seleccionado ningún elemento.")
             return
 
         selected_item = selected_items[0]
-        alumno_id = self.treeview.item(selected_item, "values")[0]
+        alumno_id = self.tvAlumnos.item(selected_item, "values")[0]
         try:
             self.db_manager.delete(alumno_id)
             messagebox.showinfo("Información", "Alumno eliminado con éxito")
@@ -209,23 +293,21 @@ class AlumnoApp:
             messagebox.showerror("Error", f"Error al eliminar el alumno: {e}")
 
     def load_data(self):
-        for i in self.treeview.get_children():
-            self.treeview.delete(i)
+        for i in self.tvAlumnos.get_children():
+            self.tvAlumnos.delete(i)
         for row in self.db_manager.fetch_all():
-            self.treeview.insert("", "end", values=row)
+            self.tvAlumnos.insert("", "end", values=row)
 
     def on_treeview_click(self, event):
-        selected_items = self.treeview.selection()
+        selected_items = self.tvAlumnos.selection()
         if not selected_items:
             return
 
         selected_item = selected_items[0]
-        item_values = self.treeview.item(selected_item, "values")
-        for index, key in enumerate(
-            ["Código", "Nombre", "Apellido", "Email", "Teléfono", "Ciclo"]
-        ):
-            self.entries[key].delete(0, "end")
-            self.entries[key].insert(0, item_values[index + 1])
+        item_values = self.tvAlumnos.item(selected_item, "values")
+        fields = ["Código", "Nombre", "Apellido", "Email", "Teléfono", "Ciclo"]
+        for idx, field in enumerate(fields):
+            getattr(self, field).set(item_values[idx + 1])
 
 
 if __name__ == "__main__":
@@ -234,10 +316,5 @@ if __name__ == "__main__":
             host="localhost", user="root", password="123456789", database="tutoria"
         )
         app = AlumnoApp(db_manager)
-        app.root.mainloop()
-    except mysql.connector.Error as e:
-        messagebox.showerror(
-            "Database Error", f"Failed to connect to the database: {e}"
-        )
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {e}")

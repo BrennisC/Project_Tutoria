@@ -21,7 +21,7 @@ class DatabaseManagerAlumnos:
         try:
             connection = self.connect()
             cursor = connection.cursor()
-            cursor.execute("SELECT * FROM tutoria.alumnos ORDER BY id_alumno DESC")
+            cursor.execute("SELECT * FROM alumnos")
             rows = cursor.fetchall()
             cursor.close()
             connection.close()
@@ -35,7 +35,7 @@ class DatabaseManagerAlumnos:
             connection = self.connect()
             cursor = connection.cursor()
             sql = (
-                "INSERT INTO alumnos (codigo, nombre, apellido, email, telefono, ciclo) "
+                "INSERT INTO alumnos (codigo_alumno, nombre_alumno, apellido_alumno, email, telefono, ciclo) "
                 "VALUES (%s, %s, %s, %s, %s, %s)"
             )
             cursor.execute(sql, data)
@@ -50,7 +50,7 @@ class DatabaseManagerAlumnos:
             connection = self.connect()
             cursor = connection.cursor()
             sql = (
-                "UPDATE alumnos SET codigo=%s, nombre=%s, apellido=%s, email=%s, telefono=%s, ciclo=%s "
+                "UPDATE alumnos SET codigo_alumno=%s, nombre_alumno=%s, apellido_alumno=%s, email=%s, telefono=%s, ciclo=%s "
                 "WHERE id_alumno=%s"
             )
             cursor.execute(sql, data)
@@ -67,7 +67,7 @@ class DatabaseManagerAlumnos:
             cursor.execute("DELETE FROM alumnos WHERE id_alumno = %s", (id_alumno,))
             connection.commit()
 
-            # Restablecer el ID a 1
+            # Reset AUTO_INCREMENT to 1
             cursor.execute("ALTER TABLE alumnos AUTO_INCREMENT = 1")
             connection.commit()
 
