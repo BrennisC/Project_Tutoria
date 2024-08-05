@@ -14,10 +14,10 @@ class ProfesoresApp:
         self.app.title("Tutorias")
         self.app.geometry("900x700")
         self.app.configure(bg="#E8F0F2")
-        self.icon_img = PhotoImage(
-            file="src/example/UNAS.png"
-        )  # Reemplaza con la ruta de tu ícono
-        self.app.iconphoto(False, self.icon_img)
+
+        icon_path = "src/example/UNAS.png"  # Replace with the path to your icon
+        self.set_window_icon(icon_path)
+
         self.Codigo = StringVar()
         self.Nombre = StringVar()
         self.Apellido = StringVar()
@@ -27,6 +27,15 @@ class ProfesoresApp:
 
         self.create_widgets()
         self.app.mainloop()
+
+    def set_window_icon(self, icon_path):
+        if os.path.exists(icon_path):
+            try:
+                self.icon_img = PhotoImage(file=icon_path)
+                self.app.iconphoto(False, self.icon_img)
+            except Exception:
+                # If setting the icon fails, continue without setting the icon
+                pass
 
     def create_widgets(self):
         main_frame = Frame(self.app, bg="#E8F0F2")

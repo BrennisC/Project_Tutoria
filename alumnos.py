@@ -305,7 +305,7 @@ class AlumnoApp:
 
         selected_item = selected_items[0]
         item_values = self.tvAlumnos.item(selected_item, "values")
-        fields = ["Código", "Nombre", "Apellido", "Email", "Teléfono", "Ciclo"]
+        fields = ["Codigo", "Nombre", "Apellido", "Email", "Telefono", "Ciclo"]
         for idx, field in enumerate(fields):
             getattr(self, field).set(item_values[idx + 1])
 

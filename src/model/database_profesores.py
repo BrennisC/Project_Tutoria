@@ -21,7 +21,7 @@ class DatabaseManagerProfesores:
         try:
             connection = self.connect()
             cursor = connection.cursor()
-            cursor.execute("SELECT * FROM tutoria.profesores")
+            cursor.execute("SELECT * FROM profesores")
             rows = cursor.fetchall()
             cursor.close()
             connection.close()
