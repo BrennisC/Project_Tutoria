@@ -3,9 +3,9 @@ import sys
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from profesores import ProfesoresApp
+from src.components.profesores import ProfesoresApp
 from PIL import Image, ImageTk
-from alumnos import AlumnoApp
+from src.components.alumnos import AlumnoApp
 from src.model.database_profesores import DatabaseManagerProfesores
 from src.model.database_alumnos import DatabaseManagerAlumnos
 
